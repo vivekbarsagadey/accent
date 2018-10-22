@@ -12,11 +12,8 @@ RATE = 44100
 CHUNK = 1024
 RECORD_SECONDS =5
 WAVE_OUTPUT_FILENAME = "file.wav"
-THRESHOLD = 40
 
 audio = pyaudio.PyAudio()
-plot_counter = 0
-
 # start Recording
 stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
@@ -39,13 +36,7 @@ stream.close()
 audio.terminate()
 
 amplitude = np.sqrt(np.mean(np.square(data_int)))
-#spectrogram of data
 
-f, t, Sxx = signal.spectrogram(data_int, RATE)
-plt.pcolormesh(t, f, Sxx)
-plt.ylabel('Frequency [Hz]')
-plt.xlabel('Time [sec]')
-plt.show()
 
 #write audio into the file
 
@@ -55,3 +46,12 @@ waveFile.setsampwidth(audio.get_sample_size(FORMAT))
 waveFile.setframerate(RATE)
 waveFile.writeframes(b''.join(frames))
 waveFile.close()
+
+#spectrogram of data
+
+f, t, Sxx = signal.spectrogram(data_int, RATE)
+#dBS = 10 * np.log10(Sxx)
+#plt.pcolormesh(t, f, Sxx)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.show()
