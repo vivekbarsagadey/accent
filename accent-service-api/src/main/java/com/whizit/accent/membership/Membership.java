@@ -20,7 +20,8 @@ public class Membership {
 	private String period;
 	private Double fee;
 	private String details;
+	private String type;
 	private String discount;
 	private String discountPeriod;
-	private String type;
+	
 }
