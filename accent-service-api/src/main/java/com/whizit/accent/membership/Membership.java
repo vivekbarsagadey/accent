@@ -17,11 +17,10 @@ public class Membership {
 	@Column(name = "membership_id", length = 100, nullable = false, unique = true)
 	private String id;
 	private String name;
-	private String type;
 	private String period;
 	private Double fee;
 	private String details;
 	private String discount;
 	private String discountPeriod;
-
+	private String type;
 }
