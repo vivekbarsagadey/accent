@@ -6,13 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.whizit.accent.common.domain.BaseEntity;
+
 import lombok.Data;
 
 @Entity
 @Table(name = "TB_MEMBERSHIP")
 @Data
 @Access(AccessType.PROPERTY)
-public class Membership {
+public class Membership extends BaseEntity{
 
 	@Column(name = "membership_id", length = 100, nullable = false, unique = true)
 	private String id;
