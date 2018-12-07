@@ -14,7 +14,7 @@ import lombok.Data;
 @Table(name = "TB_WORD")
 @Data
 @Access(AccessType.PROPERTY)
-public class Word extends BaseEntity{
+public class Word extends BaseEntity {
 
 	@Column(name = "word_id", length = 100, nullable = false, unique = true)
 	private String wordId;
