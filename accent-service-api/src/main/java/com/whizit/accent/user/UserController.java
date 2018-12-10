@@ -1,8 +1,9 @@
 package com.whizit.accent.user;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,26 +26,29 @@ public class UserController {
 	}
 
 	@GetMapping("/")
-	List<User> findAll() {
-		return userRepository.findAll();
+	@ApiOperation(value = "Get All users", produces = "application/text")
+	public ResponseEntity<List<User>> findAll() {
+		return new ResponseEntity<List<User>>(userRepository.findAll(), HttpStatus.OK);
 	}
 
 	@PostMapping("/")
-	User save(@RequestBody User newUser) {
-		return userRepository.save(newUser);
+	public ResponseEntity<User> save(@RequestBody User newUser) {
+		return new ResponseEntity<User>((userRepository.save(newUser)) ,HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	Optional<User> findById(@PathVariable String id) {
-		Optional<User> user = userRepository.findById(id);
-		if (!user.isPresent()) {
-			throw new UserNotFoundException(id);
-		}
-		return user;
+	public ResponseEntity<User> findById(@PathVariable String id) {
+		final var response = new ResponseEntity<User>(HttpStatus.OK);
+		userRepository.findById(id).ifPresentOrElse(u->{
+			response.ok(u);
+		}, ()->{
+			response.status(HttpStatus.NOT_FOUND);
+		});
+		return response;
 	}
 
 	@PutMapping("/{id}")
-	User update(@RequestBody User newUser, @PathVariable(name = "id", required = true) String id) {
+	public ResponseEntity<User> update(@RequestBody User newUser, @PathVariable(name = "id", required = true) String id) {
 		return userRepository.findById(id).map(user -> {
 			user.setLogin(newUser.getLogin());
 			user.setUserId(newUser.getUserId());
@@ -52,18 +58,17 @@ public class UserController {
 			user.setEmailId(newUser.getEmailId());
 			user.setPhone(newUser.getPhone());
 			user.setRole(newUser.getRole());
-			return userRepository.save(user);
+			return new ResponseEntity<User>(userRepository.save(user),HttpStatus.OK);
 		}).orElseGet(() -> {
-			newUser.setId(id);
-			return userRepository.save(newUser);
+			return new ResponseEntity<User>(newUser,HttpStatus.NOT_FOUND);
 		});
 
 	}
 
 	@DeleteMapping("/{id}")
-	String delete(@PathVariable String id) {
+	public ResponseEntity<String> delete(@PathVariable String id) {
 		userRepository.deleteById(id);
-		return "User deleted successfully!!";
+		return  new ResponseEntity<String>("User deleted successfully!!",HttpStatus.OK);
 	}
 
 }
