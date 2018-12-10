@@ -3,6 +3,8 @@ package com.whizit.accent.userpracticesession;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/userpracticesession")
+@RequestMapping("/api/userpracticesessions")
 public class UserPracticeSessionController {
 
 	private final UserPracticeSessionRepository userPracticeSessionRepository;
@@ -22,27 +24,32 @@ public class UserPracticeSessionController {
 		this.userPracticeSessionRepository = userPracticeSessionRepository;
 	}
 
-	@GetMapping("/userPracticeSessions")
-	List<UserPracticeSession> getAll() {
-		return userPracticeSessionRepository.findAll();
+	@GetMapping("/")
+	ResponseEntity<List<UserPracticeSession>> getAll() {
+		return new ResponseEntity<List<UserPracticeSession>>(userPracticeSessionRepository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping("/userPracticeSessions")
-	UserPracticeSession newUserPracticeSession(@RequestBody UserPracticeSession newUserPracticeSession) {
-		return userPracticeSessionRepository.save(newUserPracticeSession);
+	@PostMapping("/")
+	ResponseEntity<UserPracticeSession> newUserPracticeSession(
+			@RequestBody UserPracticeSession newUserPracticeSession) {
+		return new ResponseEntity<UserPracticeSession>(userPracticeSessionRepository.save(newUserPracticeSession),
+				HttpStatus.OK);
 	}
 
-	@GetMapping("/userPracticeSessions/{id}")
-	Optional<UserPracticeSession> findUserPracticeSessionById(@PathVariable String id) {
-		Optional<UserPracticeSession> userPracticeSession = userPracticeSessionRepository.findById(id);
-		if (!userPracticeSession.isPresent()) {
-			throw new UserPracticeSessionNotFoundException(id);
-		}
-		return userPracticeSession;
+	@GetMapping("/{id}")
+	ResponseEntity<UserPracticeSession> findUserPracticeSessionById(@PathVariable String id) {
+		final var response = new ResponseEntity<UserPracticeSession>(HttpStatus.OK);
+		userPracticeSessionRepository.findById(id).ifPresentOrElse(u -> {
+
+		}, () -> {
+			response.status(HttpStatus.NOT_FOUND);
+		});
+		return response;
 	}
 
-	@PutMapping("/userPracticeSessions/{id}")
-	UserPracticeSession replaceUserPracticeSession(@RequestBody UserPracticeSession newUserPracticeSession,
+	@PutMapping("/{id}")
+	ResponseEntity<UserPracticeSession> replaceUserPracticeSession(
+			@RequestBody UserPracticeSession newUserPracticeSession,
 			@PathVariable(name = "id", required = true) String id) {
 		return userPracticeSessionRepository.findById(id).map(userPracticeSession -> {
 			userPracticeSession.setUserPracticeSessionId(newUserPracticeSession.getUserPracticeSessionId());
@@ -52,18 +59,20 @@ public class UserPracticeSessionController {
 			userPracticeSession.setAudioRecordingUrl(newUserPracticeSession.getAudioRecordingUrl());
 			userPracticeSession.setSessionStartTime(newUserPracticeSession.getSessionStartTime());
 			userPracticeSession.setSessionEndTime(newUserPracticeSession.getSessionEndTime());
-			return userPracticeSessionRepository.save(userPracticeSession);
+			return new ResponseEntity<UserPracticeSession>(userPracticeSessionRepository.save(userPracticeSession),
+					HttpStatus.OK);
 		}).orElseGet(() -> {
 			newUserPracticeSession.setId(id);
-			return userPracticeSessionRepository.save(newUserPracticeSession);
+			return new ResponseEntity<UserPracticeSession>(userPracticeSessionRepository.save(newUserPracticeSession),
+					HttpStatus.OK);
 		});
 
 	}
 
-	@DeleteMapping("/userPracticeSessions/{id}")
-	String deleteUserPracticeSession(@PathVariable String id) {
+	@DeleteMapping("/{id}")
+	ResponseEntity<String> deleteUserPracticeSession(@PathVariable String id) {
 		userPracticeSessionRepository.deleteById(id);
-		return "User Membership deleted successfully!!";
+		return new ResponseEntity<String>("User Membership deleted successfully!!", HttpStatus.OK);
 	}
 
 }

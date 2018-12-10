@@ -3,6 +3,8 @@ package com.whizit.accent.word;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/word")
+@RequestMapping("/api/words")
 public class WordController {
 
 	private final WordRepository wordRepository;
@@ -22,27 +24,30 @@ public class WordController {
 		this.wordRepository = wordRepository;
 	}
 
-	@GetMapping("/words")
-	List<Word> getAll() {
-		return wordRepository.findAll();
+	@GetMapping("/")
+	ResponseEntity<List<Word>> getAll() {
+		return new ResponseEntity<List<Word>>(wordRepository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping("/words")
-	Word newWord(@RequestBody Word newWord) {
-		return wordRepository.save(newWord);
+	@PostMapping("/")
+	ResponseEntity<Word> newWord(@RequestBody Word newWord) {
+		return new ResponseEntity<Word>(wordRepository.save(newWord), HttpStatus.OK);
+
 	}
 
-	@GetMapping("/words/{id}")
-	Optional<Word> findWordById(@PathVariable String id) {
-		Optional<Word> word = wordRepository.findById(id);
-		if (!word.isPresent()) {
-			throw new WordNotFoundException(id);
-		}
-		return word;
+	@GetMapping("/{id}")
+	ResponseEntity<Word> findWordById(@PathVariable String id) {
+		final var response = new ResponseEntity<Word>(HttpStatus.OK);
+		wordRepository.findById(id).ifPresentOrElse(u -> {
+
+		}, () -> {
+			response.status(HttpStatus.NOT_FOUND);
+		});
+		return response;
 	}
 
-	@PutMapping("/words/{id}")
-	Word replaceWord(@RequestBody Word newWord, @PathVariable(name = "id", required = true) String id) {
+	@PutMapping("/{id}")
+	ResponseEntity<Word> replaceWord(@RequestBody Word newWord, @PathVariable(name = "id", required = true) String id) {
 		return wordRepository.findById(id).map(word -> {
 			word.setWordId(newWord.getId());
 			word.setWordCategoryId(newWord.getWordCategoryId());
@@ -52,19 +57,19 @@ public class WordController {
 			word.setSpeakingSketchIllustrationUrl(newWord.getSpeakingSketchIllustrationUrl());
 			word.setWordCategory(newWord.getWordCategory());
 			word.setWodNotation(newWord.getWodNotation());
-			return wordRepository.save(word);
+			return new ResponseEntity<Word>(wordRepository.save(word), HttpStatus.OK);
 
 		}).orElseGet(() -> {
 			newWord.setId(id);
-			return wordRepository.save(newWord);
+			return new ResponseEntity<Word>(wordRepository.save(newWord), HttpStatus.OK);
 		});
 
 	}
 
-	@DeleteMapping("/words/{id}")
-	String deleteWord(@PathVariable String id) {
+	@DeleteMapping("/{id}")
+	ResponseEntity<String> deleteWord(@PathVariable String id) {
 		wordRepository.deleteById(id);
-		return "Word deleted successfully!!";
+		return new ResponseEntity<String>("Word deleted successfully!!", HttpStatus.OK);
 	}
 
 }

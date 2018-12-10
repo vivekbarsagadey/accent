@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/api/systemresponse")
+@RequestMapping("/api/systemresponses")
 public class RecommenderSystemResponseController {
 
 	private final RecommenderSystemResponseRepository systemResponseRepo;
@@ -26,7 +26,7 @@ public class RecommenderSystemResponseController {
 	}
 
 	@GetMapping("/")
-	@ApiOperation(value = "Get All users", produces = "application/text")
+	@ApiOperation(value = "Get All", produces = "application/text")
 	public ResponseEntity<List<RecommenderSystemResponse>> findAll() {
 		return new ResponseEntity<List<RecommenderSystemResponse>>(systemResponseRepo.findAll(), HttpStatus.OK);
 	}

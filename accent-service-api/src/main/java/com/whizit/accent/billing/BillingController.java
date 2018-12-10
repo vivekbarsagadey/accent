@@ -3,7 +3,6 @@ package com.whizit.accent.billing;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import io.swagger.annotations.ApiOperation;
 
 @Controller
-@RequestMapping("/api/bill")
+@RequestMapping("/api/bills")
 public class BillingController {
 
 	private final BillingRepository billingRepository;
@@ -23,42 +26,47 @@ public class BillingController {
 		this.billingRepository = billingRepository;
 	}
 
-	@GetMapping("/bills")
-	List<Billing> getAll() {
-		return billingRepository.findAll();
+	@GetMapping("/")
+	@ApiOperation(value = "Get All Bills", produces = "application/text")
+	ResponseEntity<List<Billing>> getAll() {
+		return new ResponseEntity<List<Billing>>(billingRepository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping("/Bills")
-	Billing newBill(@RequestBody Billing newBill) {
-		return billingRepository.save(newBill);
+	@PostMapping("/")
+	ResponseEntity<Billing> newBill(@RequestBody Billing newBill) {
+		return new ResponseEntity<Billing>(billingRepository.save(newBill), HttpStatus.OK);
 	}
 
-	@GetMapping("/Bills/{id}")
-	Optional<Billing> findBillById(@PathVariable String id) {
-		Optional<Billing> bill = billingRepository.findById(id);
-		if (!bill.isPresent()) {
-			throw new BillNotFoundException(id);
-		}
-		return bill;
+	@GetMapping("/{id}")
+	ResponseEntity<Billing> findBillById(@PathVariable String id) {
+		final var response = new ResponseEntity<Billing>(HttpStatus.OK);
+		billingRepository.findById(id).ifPresentOrElse(u -> {
+			response.ok(u);
+		}, () -> {
+			response.status(HttpStatus.NOT_FOUND);
+		});
+		return response;
 	}
 
-	@PutMapping("/Bills/{id}")
-	Billing replaceBill(@RequestBody Billing newBill, @PathVariable(name = "id", required = true) String id) {
+	@PutMapping("/{id}")
+	ResponseEntity<Billing> replaceBill(@RequestBody Billing newBill,
+			@PathVariable(name = "id", required = true) String id) {
 		return billingRepository.findById(id).map(bill -> {
 			bill.setName(newBill.getName());
 
-			return billingRepository.save(bill);
+			return new ResponseEntity<Billing>(billingRepository.save(bill), HttpStatus.OK);
+
 		}).orElseGet(() -> {
 			newBill.setId(id);
-			return billingRepository.save(newBill);
+			return new ResponseEntity<Billing>(newBill, HttpStatus.NOT_FOUND);
 		});
 
 	}
 
-	@DeleteMapping("/Bills/{id}")
-	String deleteBill(@PathVariable String id) {
+	@DeleteMapping("/{id}")
+	ResponseEntity<String> deleteBill(@PathVariable String id) {
 		billingRepository.deleteById(id);
-		return "Billing deleted successfully!!";
+		return new ResponseEntity<String>("Bill deleted successfully!!", HttpStatus.OK);
 	}
 
 }

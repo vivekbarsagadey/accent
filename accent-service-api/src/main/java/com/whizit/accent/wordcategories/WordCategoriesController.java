@@ -3,6 +3,8 @@ package com.whizit.accent.wordcategories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/wordcategory")
+@RequestMapping("/api/wordcategories")
 public class WordCategoriesController {
 
 	private final WordCategoriesRepository wordCategoriesRepo;
@@ -22,44 +24,46 @@ public class WordCategoriesController {
 		this.wordCategoriesRepo = wordCategoriesRepo;
 	}
 
-	@GetMapping("/wordCategory")
-	List<WordCategories> getAll() {
-		return wordCategoriesRepo.findAll();
+	@GetMapping("/")
+	ResponseEntity<List<WordCategories>> getAll() {
+		return new ResponseEntity<List<WordCategories>>(wordCategoriesRepo.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping("/wordCategory")
-	WordCategories newWordCategory(@RequestBody WordCategories newWordCategory) {
-		return wordCategoriesRepo.save(newWordCategory);
+	@PostMapping("/")
+	ResponseEntity<WordCategories> newWordCategory(@RequestBody WordCategories newWordCategory) {
+		return new ResponseEntity<WordCategories>(wordCategoriesRepo.save(newWordCategory), HttpStatus.OK);
 	}
 
-	@GetMapping("/wordCategory/{id}")
-	Optional<WordCategories> findWordCategoryById(@PathVariable String id) {
-		Optional<WordCategories> wordCategory = wordCategoriesRepo.findById(id);
-		if (!wordCategory.isPresent()) {
-			throw new WordCategoriesNotFoundException(id);
-		}
-		return wordCategory;
+	@GetMapping("/{id}")
+	ResponseEntity<WordCategories> findWordCategoryById(@PathVariable String id) {
+		final var response = new ResponseEntity<WordCategories>(HttpStatus.OK);
+		wordCategoriesRepo.findById(id).ifPresentOrElse(u -> {
+
+		}, () -> {
+			response.status(HttpStatus.NOT_FOUND);
+		});
+		return response;
 	}
 
-	@PutMapping("/wordCategory/{id}")
-	WordCategories replaceWordCategory(@RequestBody WordCategories newWordCategory,
+	@PutMapping("/{id}")
+	ResponseEntity<WordCategories> replaceWordCategory(@RequestBody WordCategories newWordCategory,
 			@PathVariable(name = "id", required = true) String id) {
 		return wordCategoriesRepo.findById(id).map(wordCategory -> {
 			wordCategory.setWordCategoryId(newWordCategory.getWordCategoryId());
 			wordCategory.setWordCategoryName(newWordCategory.getWordCategoryName());
-			return wordCategoriesRepo.save(wordCategory);
+			return new ResponseEntity<WordCategories>(wordCategoriesRepo.save(wordCategory), HttpStatus.OK);
 
 		}).orElseGet(() -> {
 			newWordCategory.setId(id);
-			return wordCategoriesRepo.save(newWordCategory);
+			return new ResponseEntity<WordCategories>(wordCategoriesRepo.save(newWordCategory), HttpStatus.OK);
 		});
 
 	}
 
-	@DeleteMapping("/wordCategory/{id}")
-	String deleteCategory(@PathVariable String id) {
+	@DeleteMapping("/{id}")
+	ResponseEntity<String> deleteCategory(@PathVariable String id) {
 		wordCategoriesRepo.deleteById(id);
-		return "category deleted successfully!!";
+		return new ResponseEntity<String>("category deleted successfully!!", HttpStatus.OK);
 	}
 
 }
