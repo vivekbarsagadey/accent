@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AccentServiceApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AccentServiceApiApplication.class, args);
+		SpringApplication application = new SpringApplication(AccentServiceApiApplication.class);
+		application.setAdditionalProfiles("ssl");
+		application.run(args);
 	}
 }

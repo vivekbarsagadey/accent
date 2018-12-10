@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private final UserRepository userRepository;
@@ -22,17 +22,17 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 
-	@GetMapping("/users")
+	@GetMapping("/")
 	List<User> getAll() {
 		return userRepository.findAll();
 	}
 
-	@PostMapping("/users")
+	@PostMapping("/")
 	User newUser(@RequestBody User newUser) {
 		return userRepository.save(newUser);
 	}
 
-	@GetMapping("/users/{id}")
+	@GetMapping("/{id}")
 	Optional<User> findUserById(@PathVariable String id) {
 		Optional<User> user = userRepository.findById(id);
 		if (!user.isPresent()) {
@@ -41,7 +41,7 @@ public class UserController {
 		return user;
 	}
 
-	@PutMapping("/users/{id}")
+	@PutMapping("/{id}")
 	User replaceUser(@RequestBody User newUser, @PathVariable(name = "id", required = true) String id) {
 		return userRepository.findById(id).map(user -> {
 			user.setLogin(newUser.getLogin());
@@ -60,7 +60,7 @@ public class UserController {
 
 	}
 
-	@DeleteMapping("/users/{id}")
+	@DeleteMapping("/{id}")
 	String deleteUser(@PathVariable String id) {
 		userRepository.deleteById(id);
 		return "User deleted successfully!!";
