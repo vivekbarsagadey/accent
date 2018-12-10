@@ -14,7 +14,7 @@ import lombok.Data;
 @Table(name = "TB_USER_PRACTICE_SESSION")
 @Data
 @Access(AccessType.PROPERTY)
-public class UserPracticeSession extends BaseEntity{
+public class UserPracticeSession extends BaseEntity {
 
 	@Column(name = "user_practice_session_id", length = 100, nullable = false, unique = true)
 	private String userPracticeSessionId;
