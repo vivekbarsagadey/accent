@@ -23,17 +23,17 @@ public class UserController {
 	}
 
 	@GetMapping("/")
-	List<User> getAll() {
+	List<User> findAll() {
 		return userRepository.findAll();
 	}
 
 	@PostMapping("/")
-	User newUser(@RequestBody User newUser) {
+	User save(@RequestBody User newUser) {
 		return userRepository.save(newUser);
 	}
 
 	@GetMapping("/{id}")
-	Optional<User> findUserById(@PathVariable String id) {
+	Optional<User> findById(@PathVariable String id) {
 		Optional<User> user = userRepository.findById(id);
 		if (!user.isPresent()) {
 			throw new UserNotFoundException(id);
@@ -42,7 +42,7 @@ public class UserController {
 	}
 
 	@PutMapping("/{id}")
-	User replaceUser(@RequestBody User newUser, @PathVariable(name = "id", required = true) String id) {
+	User update(@RequestBody User newUser, @PathVariable(name = "id", required = true) String id) {
 		return userRepository.findById(id).map(user -> {
 			user.setLogin(newUser.getLogin());
 			user.setUserId(newUser.getUserId());
@@ -61,7 +61,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/{id}")
-	String deleteUser(@PathVariable String id) {
+	String delete(@PathVariable String id) {
 		userRepository.deleteById(id);
 		return "User deleted successfully!!";
 	}
