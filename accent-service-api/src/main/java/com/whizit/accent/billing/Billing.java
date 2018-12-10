@@ -14,6 +14,7 @@ import lombok.Data;
 @Table(name = "TB_BILLING")
 @Data
 @Access(AccessType.PROPERTY)
-public class Billing extends BaseEntity{
-
+public class Billing extends BaseEntity {
+	@Column(name = "membership_name", length = 100, nullable = false, unique = true)
+	private String name;
 }
