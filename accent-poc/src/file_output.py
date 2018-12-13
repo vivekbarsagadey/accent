@@ -67,7 +67,7 @@ plot.subplot(211)
 
 plot.title('Spectrogram of a wav file recorded with pyudio')
 
-plot.plot(filter_banks)
+plot.plot(signalData)
 
 plot.xlabel('Sample')
 

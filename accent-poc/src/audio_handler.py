@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 from matplotlib import style
 from pydub import AudioSegment
@@ -11,8 +10,8 @@ import librosa
 import soundfile as sf
 
 sample_rate =100
-rate, data = wav.read('audioData.wav')
-sound = AudioSegment.from_file('audioData.wav', format="wav")
+rate, data = wav.read('file.wav')
+sound = AudioSegment.from_file('file.wav', format="wav")
 print('How fast to play the data(framerate):',rate)
 print('printing the sound  as list of values(raw data)',data)
 
@@ -67,5 +66,3 @@ plt.plot(y_shifted,'c',label = "freq_comp")
 plt.show()
 total = np.sum(data)
 print(total)
-
-
