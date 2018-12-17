@@ -1,3 +1,4 @@
+/*
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -37,3 +38,4 @@ import { UserProfileManagementComponent } from '../../user-management/user-profi
 })
 
 export class AdminLayoutModule {}
+*/

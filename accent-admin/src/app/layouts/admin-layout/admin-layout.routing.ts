@@ -1,3 +1,4 @@
+/*
 import { Routes } from '@angular/router';
 
 import { DashboardComponent } from '../../dashboard/dashboard.component';
@@ -19,3 +20,4 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
     { path: 'user-management/user-profile-management', component: UserProfileManagementComponent}]
+*/

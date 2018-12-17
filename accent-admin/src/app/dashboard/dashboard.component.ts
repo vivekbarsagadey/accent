@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
   }
   constructor() { }
 
-  ngOnInit() {
+/*  ngOnInit() {
     this.chartColor = "#FFFFFF";
     this.canvas = document.getElementById("bigDashboardChart");
     this.ctx = this.canvas.getContext("2d");
@@ -405,5 +405,5 @@ export class DashboardComponent implements OnInit {
       }
 
     this.lineChartGradientsNumbersType = 'bar';
-  }
+  }*/
 }
