@@ -1,4 +1,10 @@
 matplotlib --> 2.1.0
 pyaudio --> 0.2.11
-
-
+scipy --> 1.1.0
+pocketsphinx --> 0.1.15
+librosa --> 0.6.2
+pydub --> 0.23.0
+soundfile --> 0.10.2
+keras --> 2.2.4
+hmmlearn --> 0.2.1
+tensorflow --> 1.12.0

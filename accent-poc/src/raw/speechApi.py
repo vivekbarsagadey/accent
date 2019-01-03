@@ -27,5 +27,5 @@ except sr.UnknownValueError:
 except sr.RequestError as e:
     print("Google error; {0}".format(e))
 
-with open("microphone-results.wav", "wb") as f:
+with open("microphoneResults.wav", "wb") as f:
     f.write(audio.get_wav_data())

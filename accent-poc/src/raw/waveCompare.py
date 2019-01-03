@@ -22,8 +22,7 @@ recordings = []
 for direct in dirs:
     if direct.endswith('.wav'):
        recordings.append(direct)
-
-for filename in recordings:
+for  filename in recordings:
     sample_rate, samples = wavfile.read(str(audioPath) + filename)
     xf, vals = custom_fft(samples, sample_rate)
     plt.figure(figsize=(12, 4))
