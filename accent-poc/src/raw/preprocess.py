@@ -27,12 +27,12 @@ for direct in dirs:
     if direct.endswith('.wav'):
         recordings.append(direct)
 
-# Create a decoder with a certain model
+# Create a decoder with a hmm model
 config = DefaultConfig()
 config.set_string('-hmm', os.path.join(model_path, 'en-us'))
 config.set_string('-allphone', path.join(model_path, 'en-us/en-us-phone.lm.dmp'))
 config.set_string('-lm', os.path.join(model_path, 'en-us.lm.bin'))
-#config.set_string('-dict', os.path.join(model_path, 'cmudict-en-us.dict'))
+config.set_string('-dict', os.path.join(model_path, 'cmudict-en-us.dict'))
 config.set_float('-lw', 2.0)
 config.set_float('-beam', 1e-10)
 config.set_float('-pbeam', 1e-10)
@@ -40,7 +40,7 @@ decoder = Decoder(config)
 
 # Decode streaming data
 buf = bytearray(1024)
-with open(path.join(FilePath, 'pronunciation.wav'), 'rb') as f:
+with open(path.join(FilePath, 'speaker1.wav'), 'rb') as f:
     decoder.start_utt()
     while f.readinto(buf):
         decoder.process_raw(buf, False, False)
@@ -50,13 +50,13 @@ with open(path.join(FilePath, 'pronunciation.wav'), 'rb') as f:
 print('Phonemes: ', [seg.word for seg in decoder.seg()])
 
 # plot the graph
-fig = plt.figure(figsize=(12, 5))
+fig = plt.figure(figsize=(12, 6))
 plt.subplots_adjust(hspace=0.5)
 for index, filename in enumerate(recordings, start=1):
     sample_rate, samples = wavfile.read(str(FilePath) + filename)
     xf, vals = custom_fft(samples, sample_rate)
-    plt.subplot(3, 2, index)
-    plt.title('FFT of File ' + filename)
+    plt.subplot(3, 3, index)
+    plt.title('Frequency of BIRD word of ' + filename)
     plt.plot(xf, vals)
     plt.grid()
 plt.xlabel('Frequency')
