@@ -10,8 +10,8 @@ import librosa
 import soundfile as sf
 
 sample_rate =100
-rate, data = wav.read('file.wav')
-sound = AudioSegment.from_file('file.wav', format="wav")
+rate, data = wav.read('speaker1.wav')
+#sound = AudioSegment.from_file('file.wav', format="wav")
 print('How fast to play the data(framerate):',rate)
 print('printing the sound  as list of values(raw data)',data)
 

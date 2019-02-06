@@ -1,31 +1,20 @@
-import speech_recognition as sr
-from os import path
+import os
+from pocketsphinx import DefaultConfig, Decoder, get_model_path, get_data_path
+model_path = get_model_path()
+data_path = 'C:/project/accent/accent-poc/src/Audio/'
 
+# Create a decoder with a certain model
+config = DefaultConfig()
+config.set_string('-hmm', os.path.join(model_path, 'en-us'))
+config.set_string('-lm', os.path.join(model_path, 'en-us.lm.bin'))
+config.set_string('-dict', os.path.join(model_path, 'cmudict-en-us.dict'))
+decoder = Decoder(config)
 
-AUDIO_FILE_EN = path.join(path.dirname(path.realpath(__file__)), "ukEnglish.wav")
-
-# use the audio file as the audio source
-r = sr.Recognizer()
-with sr.AudioFile(AUDIO_FILE_EN) as source:
-    audio_en = r.record(source)
-try:
-    print('Audio File Said:',r.recognize_sphinx(audio_en))
-except sr.UnknownValueError:
-    print("Sphinx could not understand audio")
-except sr.RequestError as e:
-    print("Sphinx error; {0}".format(e))
-with sr.Microphone() as source:
-    r.adjust_for_ambient_noise(source)
-    print("Say something!")
-    audio = r.listen(source)
-
-# recognize speech using Google
-try:
-    print("You said " + r.recognize_google(audio))
-except sr.UnknownValueError:
-    print("Google could not understand audio")
-except sr.RequestError as e:
-    print("Google error; {0}".format(e))
-
-with open("microphoneResults.wav", "wb") as f:
-    f.write(audio.get_wav_data())
+# Decode streaming data
+buf = bytearray(1024)
+with open(os.path.join(data_path, 'speaker2.wav'), 'rb') as f:
+    decoder.start_utt()
+    while f.readinto(buf):
+        decoder.process_raw(buf, False, False)
+    decoder.end_utt()
+print('Best hypothesis segments:', [seg.word for seg in decoder.seg()])

@@ -7,7 +7,7 @@ from scipy.fftpack import fft
 from pocketsphinx import get_model_path, get_data_path
 from pocketsphinx import DefaultConfig, Decoder
 
-
+fps = 50
 def custom_fft(y, fs):
     T = 1.0 / fs
     N = y.shape[0]
@@ -30,7 +30,7 @@ for direct in dirs:
 # Create a decoder with a hmm model
 config = DefaultConfig()
 config.set_string('-hmm', os.path.join(model_path, 'en-us'))
-config.set_string('-allphone', path.join(model_path, 'en-us/en-us-phone.lm.dmp'))
+config.set_string('-allphone', os.path.join(model_path, 'en-us-phone.lm.bin'))
 config.set_string('-lm', os.path.join(model_path, 'en-us.lm.bin'))
 config.set_string('-dict', os.path.join(model_path, 'cmudict-en-us.dict'))
 config.set_float('-lw', 2.0)
@@ -40,17 +40,24 @@ decoder = Decoder(config)
 
 # Decode streaming data
 buf = bytearray(1024)
-with open(path.join(FilePath, 'speaker1.wav'), 'rb') as f:
+with open(path.join(FilePath, 'Recording.wav'), 'rb') as f:
     decoder.start_utt()
     while f.readinto(buf):
         decoder.process_raw(buf, False, False)
     decoder.end_utt()
+    print('Phonemes: ', [seg.word for seg in decoder.seg()])
+    print('-' * 28)
+    print('| %5s |  %3s  |   %4s   |' % ('start', 'end', 'word'))
+    print('-' * 28)
+    for s in decoder.seg():
+        print('| %4ss | %4ss | %8s |' % (s.start_frame / fps, s.end_frame / fps, s.word))
+    print('-' * 28)
 #hypothesis = decoder.hyp()
 #print(hypothesis)
-print('Phonemes: ', [seg.word for seg in decoder.seg()])
+
 
 # plot the graph
-fig = plt.figure(figsize=(12, 6))
+'''fig = plt.figure(figsize=(12, 6))
 plt.subplots_adjust(hspace=0.5)
 for index, filename in enumerate(recordings, start=1):
     sample_rate, samples = wavfile.read(str(FilePath) + filename)
@@ -61,4 +68,4 @@ for index, filename in enumerate(recordings, start=1):
     plt.grid()
 plt.xlabel('Frequency')
 plt.savefig('plot.png')
-plt.show()
+plt.show()'''

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.fftpack import fft
 
-audioPath ='C:/project/accent/accent-poc/src/raw/'
+audioPath ='C:/project/accent/accent-poc/src/Audio/'
 
 def custom_fft(y, fs):
     T = 1.0 / fs

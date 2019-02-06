@@ -1,22 +1,25 @@
 import matplotlib.pyplot as plot
 import numpy
 from scipy.io import wavfile
+from scipy.fftpack import dct
 
 # Read the wav file (mono)
+FilePath = 'C:/project/accent/accent-poc/src/Audio/'
 pre_emphasis = 0.97
 frame_size = 0.025
 frame_stride = 0.01
 NFFT = 256
 nfilt = 40
-samplingFrequency, signalData = wavfile.read('file.wav')
+num_ceps = 12
+samplingFrequency, signalData = wavfile.read(FilePath+'speaker8.wav')
 
 
 print(signalData)
 print(signalData.shape)
 
 #convert the shape
-processData = signalData[:,0]
-print(processData.shape)
+#processData = signalData[:,0]
+#print(processData.shape)
 
 #apply Pre-amphsis
 
@@ -36,6 +39,7 @@ frames = pad_signal[indices.astype(numpy.int32, copy=False)]
 frames *= numpy.hamming(frame_length)
 mag_frames = numpy.absolute(numpy.fft.rfft(frames, NFFT))  # Magnitude of the FFT
 pow_frames = ((1.0 / NFFT) * ((mag_frames) ** 2))  # Power Spectrum
+
 #mfcc Spectrum
 low_freq_mel = 0
 high_freq_mel = (2595 * numpy.log10(1 + (samplingFrequency / 2) / 700))  # Convert Hz to Mel
@@ -55,8 +59,10 @@ for m in range(1, nfilt + 1):
 filter_banks = numpy.dot(pow_frames, fbank.T)
 filter_banks = numpy.where(filter_banks == 0, numpy.finfo(float).eps, filter_banks)  # Numerical Stability
 filter_banks = 20 * numpy.log10(filter_banks)  # dB
+mfcc = dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1 : (num_ceps + 1)]
 print('these are the filter banks',filter_banks)
 print('these are pow_frames',pow_frames)
+print('mfcc',mfcc)
 
 filter_shape = filter_banks[:,0]
 pow_shape = pow_frames[:,0]
@@ -65,9 +71,9 @@ print(pow_shape.shape)
 # Plot the signal read from wav file
 plot.subplot(211)
 
-plot.title('Spectrogram of a wav file recorded with pyudio')
+plot.title('Spectrogram of a wav file recorded ')
 
-plot.plot(signalData)
+plot.plot(mfcc)
 
 plot.xlabel('Sample')
 
@@ -75,7 +81,7 @@ plot.ylabel('Amplitude')
 
 plot.subplot(212)
 
-plot.specgram(filter_shape,NFFT,Fs=samplingFrequency)
+plot.specgram(mfcc,NFFT,Fs=samplingFrequency)
 
 plot.xlabel('Time')
 

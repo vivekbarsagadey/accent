@@ -6,6 +6,8 @@ from scipy import signal
 from hmmlearn.hmm import GaussianHMM
 import matplotlib.pyplot as plt
 import librosa.display
+
+
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
@@ -43,9 +45,9 @@ newValue = data_int.reshape((64,64))
 #print(newValue)
 
 observation = np.array((0.6 * np.random.random_sample((40,2)) - 0.3), dtype=np.double)
-print(observation)
+#print(observation)
 #initating hmm model
-nComp = 5  # number of states
+'''nComp = 5  # number of states
 nMix = 2   # number of mixtures
 covarianceType = 'full'    # covariance type
 n_iter = 10    # number of iterations
@@ -68,7 +70,7 @@ for i in range(model.n_components):
     print("mean = ", model.means_[i])
     print("var = ", np.diag(model.covars_[i]))
     print()
-
+'''
 #write audio into the file
 waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 waveFile.setnchannels(CHANNELS)
@@ -86,7 +88,6 @@ D = librosa.amplitude_to_db(librosa.stft(y), ref=np.max)
 n = D.shape[0]
 yout = librosa.fft_frequencies(sr=sr, n_fft=1+(2 * (n - 1)) )
 print (yout, yout.min(), yout.max())
-
 #xaxis
 m = D.shape[1]
 hop_length=512
@@ -100,8 +101,8 @@ plt.colorbar(format='%+2.0f dB')
 plt.ylabel('Frequency [Hz]')
 plt.xlabel('Time [sec]')
 plt.show()
-#slicing of spectrogram
 
+#slicing of spectrogram
 plt.pcolormesh(t, f, Sxx)
 plt.colorbar(format='%+2.0f dB')
 plt.ylabel('Frequency [Hz]')
