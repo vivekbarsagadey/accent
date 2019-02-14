@@ -21,7 +21,14 @@ print(F.shape)
 #print(classname)
 
 
-#plt.subplot(2,1,1); plt.plot(F[34,:]); plt.xlabel('Frame no'); plt.ylabel(f_names[34]);
-#plt.subplot(2,1,2); plt.plot(F[9,21:]); plt.xlabel('Frame no'); plt.ylabel(f_names[9]); plt.show()
+plt.subplot(2,1,1)
+plt.plot(F[34,:])
+plt.xlabel('Frame no')
+plt.ylabel(f_names[34])
+plt.subplot(2,1,2)
+plt.plot(F[9,21:])
+plt.xlabel('Frame no')
+plt.ylabel(f_names[9])
+plt.show()
 
 
