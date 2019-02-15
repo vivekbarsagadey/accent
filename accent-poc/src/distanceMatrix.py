@@ -10,9 +10,9 @@ z = np.array([[2,2], [3,3], [4,4]])
 distance, path = fastdtw(x, z, dist=euclidean)
 #print(distance)
 #print(path)
-
-FilePath = 'C:/project/accent/accent-poc/src/Audio/compare/'
-mfccPath = 'C:/project/accent/accent-poc/src/csvFiles/'
+BASE_DIR = os.getcwd()
+FilePath = BASE_DIR + '/Audio/compare/'
+mfccPath = BASE_DIR + '/csvFiles/'
 dirs = [f for f in os.listdir(FilePath)]
 recordings = []
 for audio in dirs:
@@ -38,9 +38,11 @@ for index, filename in enumerate(recordings, start=1):
     y, sr = librosa.load(str(FilePath) + filename)
     temp = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=12)
     mfcc = temp.T  # Here it did transpose because mfcc is 2 dimensional
-    print('mfcc array', mfcc)
+    #print('mfcc array', mfcc)
+    file = filename.split('.')
     df = pd.DataFrame(mfcc)
-    df.to_csv(mfccPath + filename +'.csv')
+    print(df)
+    df.to_csv(mfccPath + file[0] +'.csv',index=False)
     print('mfcc diamension', mfcc.shape)
     plt.subplot(2,1, index)
     plt.title('Frequency of BIRD word of ' + filename)
