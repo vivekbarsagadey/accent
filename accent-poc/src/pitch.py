@@ -2,10 +2,13 @@ import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 import wave
+import os
 from scipy.fftpack import fft
 from scipy.signal import argrelextrema
-FilePath = 'C:/project/accent/accent-poc/src/Audio/'
 
+BASE_DIR = os.getcwd()
+FilePath = BASE_DIR + '/Audio/'
+print(BASE_DIR)
 chunk = 2048
 wf = wave.open(FilePath+'speaker1.wav','r')
 rate = wf.getframerate()

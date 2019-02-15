@@ -1,12 +1,25 @@
-from pocketsphinx import AudioFile
+import fuzzy
+from pymongo import MongoClient
+import argparse
 
-# Frames per Second
-fps = 100
-FilePath = 'C:/project/accent/accent-poc/src/Audio/'
-for phrase in AudioFile(frate=fps):  # frate (default=100)
-    print('-' * 28)
-    print('| %5s |  %3s  |   %4s   |' % ('start', 'end', 'word'))
-    print('-' * 28)
-    for s in phrase.seg():
-        print('| %4ss | %4ss | %8s |' % (s.start_frame / fps, s.end_frame / fps, s.word))
-    print('-' * 28)
+parser = argparse.ArgumentParser(description='Load names into the database')
+parser.add_argument('name', nargs='+')
+args = parser.parse_args()
+
+client = MongoClient()
+db = client.phonetic_search
+dmetaphone = fuzzy.DMetaphone()
+soundex = fuzzy.Soundex(4)
+
+for n in args.name:
+    # Compute the hashes. Save soundex
+    # and nysiis as lists to be consistent
+    # with dmetaphone return type.
+    values = {'_id':n,
+              'name':n,
+              'soundex':[soundex(n)],
+              'nysiis':[fuzzy.nysiis(n)],
+              'dmetaphone':dmetaphone(n),
+              }
+    print ('Loading %s: %s, %s, %s' % (n, values['soundex'][0], values['nysiis'][0],values['dmetaphone']))
+    db.people.update({'_id':n}, values,True, False)

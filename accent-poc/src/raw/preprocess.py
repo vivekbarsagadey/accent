@@ -40,7 +40,7 @@ decoder = Decoder(config)
 
 # Decode streaming data
 buf = bytearray(1024)
-with open(path.join(FilePath, 'Recording.wav'), 'rb') as f:
+with open(path.join(FilePath, 'amol.wav'), 'rb') as f:
     decoder.start_utt()
     while f.readinto(buf):
         decoder.process_raw(buf, False, False)
@@ -50,6 +50,7 @@ with open(path.join(FilePath, 'Recording.wav'), 'rb') as f:
     print('| %5s |  %3s  |   %4s   |' % ('start', 'end', 'word'))
     print('-' * 28)
     for s in decoder.seg():
+        s.start_frame
         print('| %4ss | %4ss | %8s |' % (s.start_frame / fps, s.end_frame / fps, s.word))
     print('-' * 28)
 #hypothesis = decoder.hyp()
