@@ -1,16 +1,23 @@
 from pyAudioAnalysis import audioBasicIO
 from pyAudioAnalysis import audioFeatureExtraction
 import numpy as np
+import os
+import pandas as pd
 import librosa
 from pyAudioAnalysis import audioTrainTest as aT
 import matplotlib.pyplot as plt
-[Fs, x] = audioBasicIO.readAudioFile("speaker1.wav")
+
+BASE_DIR = os.getcwd()
+FilePath = BASE_DIR + '/Audio/'
+mfccPath = BASE_DIR + '/csvFiles/'
+[Fs, x] = audioBasicIO.readAudioFile(FilePath + "speaker1.wav")
 F, f_names = audioFeatureExtraction.stFeatureExtraction(x, Fs, 0.050*Fs, 0.025*Fs)
 print('energy_entropy',F[3,:])
 print('MFCC',F[9,:])
 mfcc = F[9,:]
 print(mfcc.shape)
-np.savetxt("mfcc1_features.csv", F, delimiter=",")
+df = pd.DataFrame(F)
+df.to_csv(mfccPath  +'all_features.csv',index=False)
 print('Chroma Deviation',F[2,:])
 print(F.shape)
 

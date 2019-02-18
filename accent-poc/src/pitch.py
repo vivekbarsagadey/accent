@@ -35,9 +35,12 @@ while True:
         values.append(number)
 print(values)
 
-
 y, sr = librosa.load(FilePath+'speaker1.wav')
 pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
+print(pitches)
+np.savetxt("foo.csv", pitches, delimiter=",")
+maxvalue = np.max(pitches)
+print(maxvalue)
 plt.subplot(211)
 plt.plot(y)
 plt.title('wave')
