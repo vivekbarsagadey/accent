@@ -6,18 +6,20 @@ from sklearn.feature_extraction.text import CountVectorizer
 filepath = os.getcwd()
 df = pd.read_csv(filepath + '/AccentGURU.csv')
 
-df = df[['words', 'category', 'phase']]
-print(df.dtypes)
-df['phase'] = df['phase'].map(lambda x: x.lower())
-df['words'] = df['words'].map(lambda x: x.lower())
+df = df[['words', 'category','words1', 'phase','primarystress']]
 
+# df['phase'] = df['phase'].map(lambda x: x.lower())
+# df['words'] = df['words'].map(lambda x: x.lower())
 df.set_index('words', inplace=True)
 
 df['bag_of_words'] = ''
 columns = df.columns
+
 for index, row in df.iterrows():
     words = ''
     for col in columns:
+        df[col] = df[col].map(lambda x: x.lower())
+        #print(col)
         words = words + row[col] + ' '
     row['bag_of_words'] = words
 

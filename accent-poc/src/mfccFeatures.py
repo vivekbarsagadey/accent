@@ -1,17 +1,8 @@
-import numpy as np
-from scipy.spatial.distance import euclidean
-from fastdtw import fastdtw
 import librosa
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-
-x = 'amol'
-z = 'anmol'
-distance, path = fastdtw(x, z, dist=euclidean)
-
-#print(distance)
-#print(path)
+from python_speech_features import mfcc
 
 BASE_DIR = os.getcwd()
 FilePath = BASE_DIR + '/Audio/compare/'
@@ -29,6 +20,7 @@ plt.subplots_adjust(hspace=0.5)
 for index, filename in enumerate(recordings, start=1):
     y, sr = librosa.load(str(FilePath) + filename)
     temp = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=12)
+    #temp = mfcc(y,sr)
     mfcc = temp.T  # Here it did transpose because mfcc is 2 dimensional
     #print('mfcc array', mfcc)
     file = filename.split('.')
@@ -36,8 +28,8 @@ for index, filename in enumerate(recordings, start=1):
     print(df)
     df.to_csv(mfccPath + file[0] +'.csv',index=False)
     print('mfcc diamension', mfcc.shape)
-    plt.subplot(2,1, index)
-    plt.title('Frequency of BIRD word of ' + filename)
+    plt.subplot(2,2, index)
+    plt.title('MFCC Features of ' + filename)
     plt.plot(mfcc)
     plt.grid()
 plt.show()

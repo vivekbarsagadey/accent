@@ -7,10 +7,10 @@ from scipy.fftpack import fft
 from scipy.signal import argrelextrema
 
 BASE_DIR = os.getcwd()
-FilePath = BASE_DIR + '/Audio/'
+FilePath = BASE_DIR + '/Audio/compare/'
 print(BASE_DIR)
 chunk = 2048
-wf = wave.open(FilePath+'speaker1.wav','r')
+wf = wave.open(FilePath+'shan-collaboration.wav','r')
 rate = wf.getframerate()
 swidth = wf.getsampwidth()
 values=[]
@@ -34,10 +34,10 @@ timestep = 1.0/rate
 #         number = max[absMax] * rate / chunk
 #         values.append(number)
 # print(values)
-y, sr = librosa.load(FilePath+'speaker1.wav')
+y, sr = librosa.load(FilePath+'shan-collaboration.wav')
 pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
 print(pitches)
-maxvalue = np.max(pitches)
+maxvalue = np.average(pitches)
 print(maxvalue)
 plt.subplot(211)
 plt.plot(y)
