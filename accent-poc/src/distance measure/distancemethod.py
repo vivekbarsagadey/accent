@@ -5,7 +5,7 @@ import numpy as np
 import difflib
 import csv
 
-data = Levenshtein.ratio('sally', 'sdssally')
+data = Levenshtein.ratio('king', 'man')
 print('Matching ratio: ', data)
 
 

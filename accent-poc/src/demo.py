@@ -26,13 +26,19 @@
 
 
 
-from gtts import gTTS
-import os
-import wave
-import contextlib
-import soundfile as sf
-import pyttsx3
 
+import pyttsx3
+from python_speech_features import mfcc
+import os
+import librosa
+import pandas as pd
+
+# BASE_DIR = os.getcwd()
+# FilePath = BASE_DIR + '/Audio/compare/'
+# y, sr = librosa.load(FilePath+'shan-collaboration.wav')
+# mfcc_featurs = mfcc(y,sr)
+# df = pd.DataFrame(mfcc_featurs)
+# df.to_csv('shan.csv',index=False)
 engine = pyttsx3.init()
 rate = engine.getProperty('rate')
 engine.setProperty('rate', rate-50)
